@@ -49,10 +49,10 @@ namespace SMB3_Curbside_Manager
                     MessageBox.Show("Admin " + tbxUsername.Text + " has successfully logged in.");
                     break;
                 case 'E':
-                    MessageBox.Show("Admin " + tbxUsername.Text + " has successfully logged in.");
+                    MessageBox.Show("Employee " + tbxUsername.Text + " has successfully logged in.");
                     break;
                 case 'C':
-                    MessageBox.Show("Admin " + tbxUsername.Text + " has successfully logged in.");
+                    MessageBox.Show("Customer " + tbxUsername.Text + " has successfully logged in.");
                     break;
                 case 'F':
                     MessageBox.Show("Incorrect Username and/or Password.", "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
