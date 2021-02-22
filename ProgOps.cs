@@ -95,17 +95,14 @@ namespace SMB3_Curbside_Manager
 
                 //Check if the passed data acquired a row
                 if (_dtEmployeesTable.Rows.Count == 1)
-                {
-                    MessageBox.Show("Employee " + username.Text + " has successfully logged in.");
                     userFound = true;
-                }
 
                 //dispose of connection objects
                 _sqlResultsCommand.Dispose();
                 _daEmployees.Dispose();
                 _dtEmployeesTable.Dispose();
 
-                //If an employee is found, check if that employee is an admin
+                //If an employee is found, start process to check for admin
                 if (userFound)
                 {
                     //string to build query
@@ -131,7 +128,7 @@ namespace SMB3_Curbside_Manager
                         _daEmployees.Dispose();
                         _dtEmployeesTable.Dispose();
 
-                        //Return an 'A'
+                        //Return an 'A' to signal an admin was found
                         return 'A';
                     }
                     else
@@ -143,13 +140,13 @@ namespace SMB3_Curbside_Manager
                         _daEmployees.Dispose();
                         _dtEmployeesTable.Dispose();
 
-                        //Return an 'E'
+                        //Return an 'E' to signal an employee was found
                         return 'E';
                     }                    
                 }
+                //If an employee was not found, start process to check for customer login
                 else
                 {
-                    //Start query to check if credentials match a customer
                     //string to build query
                     query = "Select * " +
                             "From group3sp212330.Customers " +
@@ -167,10 +164,7 @@ namespace SMB3_Curbside_Manager
 
                     //Check if the passed data acquired a row
                     if (_dtEmployeesTable.Rows.Count == 1)
-                    {
-                        MessageBox.Show("Customer " + username.Text + " has successfully logged in.");
                         userFound = true;
-                    }
 
                     //dispose of connection objects
                     _sqlResultsCommand.Dispose();
@@ -178,16 +172,11 @@ namespace SMB3_Curbside_Manager
                     _dtEmployeesTable.Dispose();
                 }
 
+                //return a 'C' if a customer was found, otherwise return an 'F' for failed login
                 if (userFound)
-                {
-                    //return a 'C' if a customer was found
                     return 'C';
-                }
                 else
-                {
-                    //return an 'F' if no user was found
                     return 'F';
-                }
             }
             catch (SqlException ex)
             {
@@ -202,11 +191,15 @@ namespace SMB3_Curbside_Manager
                             "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
                     MessageBox.Show(errorMessages.ToString(), "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                    //Returns 'Z' to signal a program error
                     return 'Z';
                 }
                 else
                 {//handles generic ones here
                     MessageBox.Show(ex.Message, "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                    //Returns 'Z' to signal a program error
                     return 'Z';
                 }
             }
