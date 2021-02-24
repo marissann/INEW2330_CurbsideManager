@@ -43,12 +43,33 @@ namespace SMB3_Curbside_Manager
         private void btnLogin_Click(object sender, EventArgs e)
         {
             //Check the database to see if the entered username and password match a customer or employee
-            ProgOps.LoginCommand(tbxUsername, tbxPassword);
+            switch (ProgOps.LoginCommand(tbxUsername, tbxPassword))
+            {
+                case 'A':
+                    MessageBox.Show("Admin " + tbxUsername.Text + " has successfully logged in.");
+                    break;
+                case 'E':
+                    MessageBox.Show("Employee " + tbxUsername.Text + " has successfully logged in.");
+                    break;
+                case 'C':
+                    MessageBox.Show("Customer " + tbxUsername.Text + " has successfully logged in.");
+                    break;
+                case 'F':
+                    MessageBox.Show("Incorrect Username and/or Password.", "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                default:
+                    MessageBox.Show("A database error has occured.", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
         }
 
         private void btnSignUp_Click(object sender, EventArgs e)
         {
+            //ProgOps.CloseDatabase();
+
             //Open the Sign Up form
+            frmSignUp s = new frmSignUp();
+            s.ShowDialog();
         }
     }
 }

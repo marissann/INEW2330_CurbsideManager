@@ -45,8 +45,8 @@ namespace SMB3_Curbside_Manager
             catch (Exception e) //Note: May change to SqlException down the road
             {
                 MessageBox.Show(e.Message);
-                
-                
+
+
             }
         }
         public static void CloseDatabase()//Attemp to Close The Database
@@ -58,9 +58,11 @@ namespace SMB3_Curbside_Manager
                 //dispose of Database
                 _cntDatabase.Dispose();
                 //dispose of everything else
+                /*
                 _sqlResultsCommand.Dispose();
                 _daEmployees.Dispose();
                 _dtEmployeesTable.Dispose();
+                */
                 MessageBox.Show("Connection to Database Closed Successfully!", "Connection Status",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -69,10 +71,9 @@ namespace SMB3_Curbside_Manager
                 MessageBox.Show(e.Message);
             }
         }
-
-        public static void LoginCommand(TextBox username, TextBox password)
+        public static char LoginCommand(TextBox username, TextBox password)
         {
-            
+
             //Pass username and password to the customers table using a query
             try
             {
@@ -95,20 +96,58 @@ namespace SMB3_Curbside_Manager
 
                 //Check if the passed data acquired a row
                 if (_dtEmployeesTable.Rows.Count == 1)
-                {
-                    MessageBox.Show("Employee " + username.Text + " has successfully logged in.");
                     userFound = true;
-                }
 
                 //dispose of connection objects
                 _sqlResultsCommand.Dispose();
                 _daEmployees.Dispose();
                 _dtEmployeesTable.Dispose();
 
-                if(!userFound)
+                //If an employee is found, start process to check for admin
+                if (userFound)
                 {
                     //string to build query
-                    query = "Select * " + 
+                    query = "Select * From group3sp212330.Employees " +
+                                   "WHERE Username = '" + username.Text + "' " +
+                                   "AND Password = '" + password.Text + "' " +
+                                   "AND IsAdmin = 1;";
+
+                    //establish command object
+                    _sqlResultsCommand = new SqlCommand(query, _cntDatabase);
+                    //establish data adapter
+                    _daEmployees = new SqlDataAdapter();
+                    _daEmployees.SelectCommand = _sqlResultsCommand;
+                    //fill data table
+                    _dtEmployeesTable = new DataTable();
+                    _daEmployees.Fill(_dtEmployeesTable);
+
+                    //Check if the user found is an employee or an admin
+                    if (_dtEmployeesTable.Rows.Count == 1)
+                    {
+                        //dispose of connection objects
+                        _sqlResultsCommand.Dispose();
+                        _daEmployees.Dispose();
+                        _dtEmployeesTable.Dispose();
+
+                        //Return an 'A' to signal an admin was found
+                        return 'A';
+                    }
+                    else
+                    {
+                        //dispose of connection objects
+                        _sqlResultsCommand.Dispose();
+                        _daEmployees.Dispose();
+                        _dtEmployeesTable.Dispose();
+
+                        //Return an 'E' to signal an employee was found
+                        return 'E';
+                    }
+                }
+                //If an employee was not found, start process to check for customer login
+                else
+                {
+                    //string to build query
+                    query = "Select * " +
                             "From group3sp212330.Customers " +
                             "WHERE UserName = '" + username.Text + "' " +
                             "AND Password = '" + password.Text + "';";
@@ -124,10 +163,7 @@ namespace SMB3_Curbside_Manager
 
                     //Check if the passed data acquired a row
                     if (_dtEmployeesTable.Rows.Count == 1)
-                    {
-                        MessageBox.Show("Customer " + username.Text + " has successfully logged in.");
                         userFound = true;
-                    }
 
                     //dispose of connection objects
                     _sqlResultsCommand.Dispose();
@@ -135,10 +171,50 @@ namespace SMB3_Curbside_Manager
                     _dtEmployeesTable.Dispose();
                 }
 
-                if(!userFound)
-                {
-                    MessageBox.Show("Incorrect Username and/or Password.", "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return a 'C' if a customer was found, otherwise return an 'F' for failed login
+                if (userFound)
+                    return 'C';
+                else
+                    return 'F';
+            }
+            catch (SqlException ex)
+            {
+                if (ex is SqlException)
+                {//handles more specific SqlException here.
+                    for (int i = 0; i < ex.Errors.Count; i++)
+                    {
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
+                    }
+                    MessageBox.Show(errorMessages.ToString(), "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    //Returns 'Z' to signal a program error
+                    return 'Z';
                 }
+                else
+                {//handles generic ones here
+                    MessageBox.Show(ex.Message, "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    //Returns 'Z' to signal a program error
+                    return 'Z';
+                }
+            }
+        }
+        public static void InsertToDatabase(TextBox firstName, TextBox lastName, MaskedTextBox phone,TextBox Email, TextBox Username, TextBox Password)
+        {
+             
+            try
+            {
+                string query = "INSERT INTO group3sp212330.CustomerTest(FirstName , LastName , Phone , Email , UserName , Password)" +
+                "values(" + "'" + firstName.Text + "','" + lastName.Text + "','" + phone.Text + "','" + Email.Text + "','" + Username.Text + "','" + Password.Text + "'" + ")";
+                _sqlResultsCommand = new SqlCommand(query, _cntDatabase);
+                _sqlResultsCommand.ExecuteNonQuery();
+
+                //Dispose of the cmd obj
+                _sqlResultsCommand.Dispose();
             }
             catch (SqlException ex)
             {
@@ -154,11 +230,8 @@ namespace SMB3_Curbside_Manager
                     }
                     MessageBox.Show(errorMessages.ToString(), "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
-                {//handles generic ones here
-                    MessageBox.Show(ex.Message, "Error on DatabaseCommand", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
         }
+
     }
 }
