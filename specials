@@ -1,0 +1,62 @@
+     proposal for checking for special characters in the password. (something along these lines?)
+     
+     
+     
+     //bool to tell if password has a number
+            bool hasNumber = false;
+
+            for (int i = 0; i < tbxPassword.Text.Trim().Length; i++)
+            {
+                if (tbxPassword.Text.Trim()[i] >= 48 && tbxPassword.Text.Trim()[i] <= 57)
+                {
+                    hasNumber = true;
+                    break;
+                }
+            }
+
+            if (!hasNumber)
+                allValid = false;
+
+
+            char[] specials = { '{', '!', '@', '#', '$', '%', '&', '*', '(', ')', '+', '-', '.', '/', ':', ';', '<', '=', '>', '?', '[', ']', '^', '_', '`', '{', '|', '}' };
+
+          
+                                //j is for your special character array
+                                if (tbxPassword.Text.Trim().IndexOfAny(specials) == -1)
+                                {
+                allValid = false;
+                  
+                               }
+                         
+                    
+
+           
+
+                //If the entered data is all valid, attempt account creation
+                if (allValid)
+                ProgOps.InsertToDatabase(tbxFirstName, tbxLastName, tbxPhone, tbxEmail, tbxUsername, tbxPassword);
+
+            //Close form
+          //  Close();
+
+           
+
+            if (!allValid)
+            {
+                MessageBox.Show(sb.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+           // ProgOps.InsertToDatabase(tbxFirstName, tbxLastName, tbxPhone, tbxEmail, tbxUsername, tbxPassword);
+        }
+
+        private void frmSignUp_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            //Close this form's connection to the database
+            ProgOps.CloseDatabase();
+
+
+    
+        }
+    }
+}
