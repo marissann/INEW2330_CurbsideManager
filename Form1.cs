@@ -13,10 +13,6 @@ namespace MailKitTest
 {
     public partial class Form1 : Form
     {
-        //OAuth Project ID: mailkittest-306622
-        //OAuth Client ID: 701434023862-rs304a9flq9chlll4uq1srjgrt2vno0d.apps.googleusercontent.com
-        //OAuth Client Secret: rSY-E16PYL-8uYTfCe180hUE
-
         public Form1()
         {
             InitializeComponent();
@@ -24,60 +20,6 @@ namespace MailKitTest
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            //Attempt from 3/4/2021 (ignore this unless you want your brain to hurt lol)
-            /*
-            //Code to get access to gmail api
-            const string GMailAccount = "thetroggysiege@gmail.com";
-
-            var clientSecrets = new ClientSecrets
-            {
-                CliendId = "701434023862-rs304a9flq9chlll4uq1srjgrt2vno0d.apps.googleusercontent.com",
-                ClientSecret = "rSY-E16PYL-8uYTfCe180hUE"
-            };
-
-            var codeFlow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-            {
-                DataStore = new FileDataStore("CredentialCacheFolder", false),
-                Scopes = new[] { "https://mail.google.com/" },
-                ClientSecrets = clientSecrets
-            });
-
-            var codeReciever = new LocalServerCodeReceiver();
-            var authCode = new AuthorizationCodeInstalledApp (codeFlow, codeReciever);
-
-            var credential = await authCode.AuthorizeAsync(CancellationToken.None);
-
-            var oauth2 = new SaslMechanismOAuth2(credential.UserId, credential.Token.AccessToken);
-
-            using(var client = new ImapClient())
-            {
-                await client.ConnectAsync("imap.gmail.com", 993, SecureSocketOptions.SslOnConnect);
-                await client.AuthenticateAsync(oauth2);
-                await client.DisconnectAsync(true);
-            }
-
-            //Code to create and send message
-            var message = new MimeKit.MimeMessage();
-            message.From.Add(new MimeKit.MailboxAddress("SMB3 Curbside Manager", "smb3curbsidemanager@gmail.com"));
-            message.To.Add(new MimeKit.MailboxAddress("Scott", "thetroggysiege@gmail.com"));
-
-            message.Subject = "MailKit Test";
-            message.Body = new MimeKit.TextPart("plain")
-            {
-                Text =
-                @"Hey Scott,
-
-If you got this, then that means you've figured out how to use MailKit to send a message. Grats ^^!
-
-- Yourself"
-            };
-
-            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
-            {
-                smtp.Connect("smtp.gmail.com", 587);
-            }
-            */
-
             //Attempt from 3/5/2021
 
             /* Notes:
