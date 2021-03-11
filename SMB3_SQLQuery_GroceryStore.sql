@@ -51,7 +51,7 @@ CREATE TABLE [group3sp212330].[Employees](
 
 
 	CREATE TABLE [group3sp212330].[OrderInfo](
-	[OrderID] [int] IDENTITY(1,1) NOT NULL,
+	[OrderID] [int] NOT NULL,
 	[ProductID] [int] NOT NULL,
 	[Quantity] [int] NOT NULL,
 	[Price] [money] NULL, 
